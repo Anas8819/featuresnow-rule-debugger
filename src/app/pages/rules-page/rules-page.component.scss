@@ -1,0 +1,70 @@
+.rule-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 16px;
+}
+
+@media (max-width: 400px) {
+  .rule-cards {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+// The whole card is clickable: the link on the rule name stretches an invisible layer (::after)
+// over the card, so a click anywhere hits that link. Keyboard and screen readers still see one real link.
+.rule-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  cursor: pointer;
+
+  &:hover {
+    border-color: var(--accent);
+  }
+
+  &:has(.card-link:focus-visible) {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+}
+
+// The rule name looks like the rest of the heading, not like a link; the card's border shows it is clickable.
+.card-link {
+  color: inherit;
+  text-decoration: none;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+
+  &:focus-visible {
+    outline: none;
+  }
+}
+
+.description {
+  margin: 0;
+  font-size: 0.85rem;
+}
+
+// In the detail view the box sits on the grey page background instead of a white card.
+.detail-logic {
+  padding: 12px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  font-size: 0.9rem;
+}
+
+// margin-top: auto pins the footer to the bottom, so footers line up across cards of different heights.
+.card-footer {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+}

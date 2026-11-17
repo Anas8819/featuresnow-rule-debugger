@@ -1,0 +1,67 @@
+.rule-dialog {
+  width: min(560px, calc(100vw - 32px));
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: 0 12px 32px rgba(20, 30, 50, 0.18);
+
+  // Only lay out the content while the dialog is open; a closed <dialog> must stay hidden.
+  &[open] {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  &::backdrop {
+    background: rgba(27, 35, 48, 0.4);
+  }
+
+  h3 {
+    margin: 0 0 6px;
+    font-size: 0.95rem;
+  }
+
+  section p {
+    margin: 0;
+  }
+}
+
+.dialog-header {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  p {
+    margin: 0;
+  }
+}
+
+.reason {
+  padding: 8px 10px;
+  border-left: 3px solid var(--accent);
+  background: var(--accent-soft);
+  border-radius: 4px;
+}
+
+.kv {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 4px 16px;
+  margin: 0;
+  font-size: 0.85rem;
+
+  dt {
+    color: var(--text-muted);
+  }
+
+  dd {
+    margin: 0;
+  }
+}
+
+.dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+}

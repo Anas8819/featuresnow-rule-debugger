@@ -1,0 +1,60 @@
+<div class="page">
+  <header class="page-header">
+    <h1>Transactions</h1>
+    @if (!loading() && !error()) {
+      <p class="muted">
+        {{ results().length | number }} transactions. Each row lists the rules it fails and why. Use the filter icon in
+        a column header to narrow the list, and click a rule to see its details.
+      </p>
+    }
+  </header>
+
+  @if (loading()) {
+    <p class="state muted">Loading transactions…</p>
+  } @else if (error()) {
+    <p class="state error">{{ error() }}</p>
+  } @else {
+    <ag-grid-angular [gridOptions]="gridOptions" [rowData]="results()" [columnDefs]="columnDefs()" />
+  }
+</div>
+
+<!--
+  The rule popup: a native <dialog> opened with showModal(), so the browser provides the backdrop,
+  closing with Esc and keeping keyboard focus inside it. closedby="any" also closes it on a backdrop click.
+-->
+<dialog #ruleDialog class="rule-dialog" closedby="any" aria-labelledby="rule-dialog-title" (close)="popup.set(null)">
+  @if (popup(); as p) {
+    <header class="dialog-header">
+      <app-rule-tags [rule]="p.failure.rule" />
+      <h2 id="rule-dialog-title">{{ p.failure.rule.name }}</h2>
+      <p class="muted">{{ p.failure.rule.description }}</p>
+    </header>
+
+    <app-rule-condition [rule]="p.failure.rule" />
+
+    <section>
+      <h3>Why {{ p.tx.transaction_id }} fails this rule</h3>
+      <p class="reason">{{ p.failure.reason }}</p>
+    </section>
+
+    <section>
+      <h3>Transaction</h3>
+      <dl class="kv">
+        <dt>Transaction</dt>
+        <dd class="mono">{{ p.tx.transaction_id }}</dd>
+        <dt>Date &amp; time</dt>
+        <dd>{{ p.tx.txn_date_time }}</dd>
+        <dt>Merchant</dt>
+        <dd>{{ p.tx.merchant_description_condensed }} ({{ p.tx.merchant_country }})</dd>
+        <dt>Type</dt>
+        <dd>{{ p.tx.transaction_type ?? '—' }}</dd>
+        <dt>Amount</dt>
+        <dd>{{ p.tx.amount | number: '1.2-2' }} {{ p.tx.currency }} ({{ p.tx.usd | number: '1.2-2' }} USD)</dd>
+      </dl>
+    </section>
+
+    <footer class="dialog-footer">
+      <button type="button" class="btn" (click)="closeRule()">Close</button>
+    </footer>
+  }
+</dialog>

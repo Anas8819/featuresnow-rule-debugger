@@ -1,0 +1,62 @@
+<div class="page">
+  @if (loading()) {
+    <p class="state muted">Loading rules…</p>
+  } @else if (error()) {
+    <p class="state error">{{ error() }}</p>
+  } @else if (selectedRule(); as rule) {
+    <div>
+      <a class="btn small" routerLink="/rules">Back to rules</a>
+    </div>
+
+    <header class="page-header">
+      <app-rule-tags [rule]="rule" />
+      <h1>{{ rule.name }}</h1>
+      <p class="muted">{{ rule.description }}</p>
+    </header>
+
+    <app-rule-condition class="detail-logic" [rule]="rule" />
+
+    <section>
+      <div class="section-title">
+        <h2>Failing transactions</h2>
+        <span class="muted">{{ failing().length | number }} transactions</span>
+      </div>
+
+      @if (failing().length === 0) {
+        <p class="empty">No transaction fails this rule. Its condition above explains why.</p>
+      } @else {
+        <ag-grid-angular [gridOptions]="gridOptions" [rowData]="failing()" [columnDefs]="columnDefs()" />
+      }
+    </section>
+  } @else {
+    <header class="page-header">
+      <h1>Rules</h1>
+      <p class="muted">
+        Each rule from <span class="mono">example_rules.json</span>, the condition it checks, and how many transactions
+        fail it. Choose a rule to see those transactions and why each one fails.
+      </p>
+    </header>
+
+    <div class="rule-cards">
+      @for (rule of rules(); track rule.rule_id) {
+        <article class="card rule-card">
+          <app-rule-tags [rule]="rule" />
+
+          <h2>
+            <a class="card-link" [routerLink]="['/rules', rule.rule_id]">{{ rule.name }}</a>
+          </h2>
+          <p class="description muted">{{ rule.description }}</p>
+
+          <app-rule-condition [rule]="rule" />
+
+          <footer class="card-footer">
+            <span>
+              <strong>{{ counts()[rule.rule_id] ?? 0 | number }}</strong>
+              <span class="muted"> transactions fail</span>
+            </span>
+          </footer>
+        </article>
+      }
+    </div>
+  }
+</div>
